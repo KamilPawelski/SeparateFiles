@@ -4,7 +4,6 @@ using System.IO.Enumeration;
 
 //Program is not ready
 //to do
-//the size of the folders must be larger than the largest file size
 //loops and exceptions to paths that exist? or something like this
 //copying to folders 
 //more and more i need to think :O
@@ -16,7 +15,8 @@ class Program
         DirectoryInfo directory;
         DirectoryInfo newDirectory;
         ulong directorySize;
-        ulong newSize;
+        ulong heaviestFileSize;
+        ulong newSize = 0;
         ushort folderCount;
         Console.WriteLine("Enter directory path.");
         var path = Console.ReadLine() ?? string.Empty;
@@ -25,20 +25,23 @@ class Program
         directorySize = DirectorySize(directory); 
         Console.WriteLine(DirectorySize(directory));
         Console.WriteLine("Enter how much space you want for the folders (B)");
-        while (true)
+        heaviestFileSize = HeaviestFile(files);
+        while (newSize < heaviestFileSize)
         {
+            Console.WriteLine($"New Folder size has to heavier than the heaviest file in the the folder ({heaviestFileSize}.)");
+            Console.WriteLine( );
             try
             {
                 var size = Console.ReadLine() ?? string.Empty;
                 newSize = ulong.Parse(size);
-                break;
+      
             }
             catch (FormatException)
             {
                 Console.WriteLine("Error - Wrong format");
             }
         }
-        folderCount = (ushort)(Math.Ceiling((double)(directorySize / newSize)));
+        folderCount = (ushort)(Math.Round(((double)directorySize / newSize), MidpointRounding.ToPositiveInfinity));
         Console.WriteLine("Enter new directory path.");
         path = Console.ReadLine() ?? string.Empty;
         newDirectory = Directory.CreateDirectory(path);
@@ -69,6 +72,18 @@ class Program
             size += (ulong)(file.Length);
         }
         
+        return size;
+    }
+    public static ulong HeaviestFile(FileInfo[] files)
+    {
+        ulong size = 0;
+        foreach(FileInfo file in files)
+        {
+            if(size < (ulong)file.Length)
+            {
+                size = (ulong)file.Length;
+            }
+        }
         return size;
     }
 }
