@@ -45,21 +45,27 @@ class Program
         Console.WriteLine("Enter new directory path.");
         path = Console.ReadLine() ?? string.Empty;
         newDirectory = Directory.CreateDirectory(path);
-    
-        //woops
-       /* for (ushort i = 0; i < folderCount; i++)
+
+        ulong filesCount = 0;
+
+        for (ushort i = 0; i < folderCount; i++)
         {
-            ulong filesCount = 0;
             ulong sizeToCompare = 0;
+
             var destinetionFile = newDirectory + "\\" + i;
-            while (sizeToCompare + (ulong) files[filesCount].Length < newSize && (ulong)files.Length >= filesCount)
+            while (sizeToCompare + (ulong) files[filesCount].Length < newSize)
             {
+                sizeToCompare += (ulong)files[filesCount].Length;
                 directory = Directory.CreateDirectory(destinetionFile);
                 string destFile = Path.Combine(directory.FullName, files[filesCount].Name);
                 File.Copy(files[filesCount].FullName, destFile);
                 filesCount++;
+                if ((ulong)files.Length == filesCount) {
+                    break;
+                }
             }
-        }*/
+            
+        }
     }
 
     public static ulong DirectorySize(DirectoryInfo directory)
